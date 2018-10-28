@@ -3,9 +3,9 @@ class Api::V1::ReservationsController < ApplicationController
 
   # GET /reservations
   def index
-    @reservations = Reservation.all
+    @rooms = Room.all
+    render json: {status:'sucess', message:'Loaded rooms',data:@rooms},status: :ok
 
-    render json: @reservations
   end
 
   # GET /reservations/1
@@ -18,7 +18,7 @@ class Api::V1::ReservationsController < ApplicationController
     @reservation = Reservation.new(reservation_params)
 
     if @reservation.save
-      render json: @reservation, status: :created, location: @reservation
+      render json: @reservation, status: :created, location: api_v1_reservation_url(@reservation)
     else
       render json: @reservation.errors, status: :unprocessable_entity
     end
@@ -26,16 +26,11 @@ class Api::V1::ReservationsController < ApplicationController
 
   # PATCH/PUT /reservations/1
   def update
-    if @reservation.update(reservation_params)
+    if @reservation.update(reservation_update_params)
       render json: @reservation
     else
       render json: @reservation.errors, status: :unprocessable_entity
     end
-  end
-
-  # DELETE /reservations/1
-  def destroy
-    @reservation.destroy
   end
 
   private
@@ -46,6 +41,10 @@ class Api::V1::ReservationsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def reservation_params
-      params.fetch(:reservation, {})
+      params.require(:reservation).permit(:check,:minibar,:user_name,:user_phone,:user_email,:user_membership,:day_in,:day_out,:room_id,:user_name)
+    end
+
+    def reservation_update_params
+      params.require(:reservation).permit(:check,:minibar)
     end
 end
