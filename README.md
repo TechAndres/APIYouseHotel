@@ -1,24 +1,11 @@
 # README
+  
+Routes:
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+GET     /api/v1/reservations(.:format)                                                           api/v1/reservations#index
+POST   /api/v1/reservations(.:format)                                                           api/v1/reservations#create
+GET    /api/v1/reservations/:id(.:format)                                                       api/v1/reservations#show
+PATCH  /api/v1/reservations/:id(.:format)                                                       api/v1/reservations#update
+PUT    /api/v1/reservations/:id(.:format)                                                       api/v1/reservations#update
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Rspec: spec/models/reservation_spec.rb
