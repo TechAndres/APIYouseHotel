@@ -1,16 +1,22 @@
 class Api::V1::ReservationsController < ApplicationController
+
   before_action :set_reservation, only: [:show, :update, :destroy]
 
   # GET /reservations
   def index
-    @rooms = Room.all
-    render json: {status:'sucess', message:'Loaded rooms',data:@rooms},status: :ok
+    @rooms = Room.available
+    render :json => @rooms.as_json(:only => [:room_number, :daily_rate])
+    # render json: {status:'sucess', message:'Loaded rooms',data:@rooms},status: :ok
 
   end
 
   # GET /reservations/1
   def show
-    render json: @reservation
+    # render json: @reservation
+    response = { :price => @reservation,:reservation => @reservation.final_price }
+    respond_to do |format|
+        format.json  { render :json => response }
+    end
   end
 
   # POST /reservations
@@ -26,10 +32,15 @@ class Api::V1::ReservationsController < ApplicationController
 
   # PATCH/PUT /reservations/1
   def update
-    if @reservation.update(reservation_update_params)
-      render json: @reservation
-    else
+
+    if @reservation.check == 'out'
       render json: @reservation.errors, status: :unprocessable_entity
+
+        elsif @reservation.update(reservation_update_params)
+            render json: @reservation
+
+            else
+                render json: @reservation.errors, status: :unprocessable_entity
     end
   end
 
@@ -46,5 +57,6 @@ class Api::V1::ReservationsController < ApplicationController
 
     def reservation_update_params
       params.require(:reservation).permit(:check,:minibar)
+
     end
 end

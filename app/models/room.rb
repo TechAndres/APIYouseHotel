@@ -1,3 +1,3 @@
 class Room < ApplicationRecord
-   has_one :reservation
+  scope :available, -> { where(available: true) }
 end
